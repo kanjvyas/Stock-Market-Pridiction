@@ -12,7 +12,7 @@ st.set_page_config(layout="wide")
 
 # Title and description
 st.title("Stock Market Prediction ")
-st.write("This app fetches stock data and predicts the closing price using an XGBoost model.")
+st.write("This app fetches stock data and predicts the  price using the XGBoost model.")
 
 # User input for stock ticker
 ticker = st.text_input("Enter Stock Ticker (e.g., AAPL, TSLA): ", "AAPL")
@@ -65,12 +65,12 @@ for _ in range(future_days):
 st.subheader("Model Accuracy")
 st.write(f"Mean Absolute Error: {mae:.2f}")
 st.write(f"Root Mean Squared Error: {rmse:.2f}")
-st.write(f"R² Score: {r2:.2f}")
+st.write(f"Model Accuracy: {r2:.2f}")
 st.progress(r2)  # Show R² score as progress
 
 # Plot the data
 st.subheader("Closing Price Prediction")
-plt.figure(figsize=(14, 7))
+plt.figure(figsize=(18, 7))
 plt.plot(data.index[-len(y_test):], y_test, label="True Closing Price (INR)")
 plt.plot(data.index[-len(y_test):], y_pred, label="Predicted Closing Price (INR)")
 plt.legend()
@@ -78,7 +78,7 @@ st.pyplot(plt)
 
 # Forecast plot
 st.subheader("Forecasted Closing Prices for Next 10 Days")
-plt.figure(figsize=(14, 7))
+plt.figure(figsize=(18, 7))
 plt.plot(range(1, future_days + 1), future_predictions, marker='o', label="Forecasted Close Price (INR)")
 plt.xlabel("Days Ahead")
 plt.ylabel("Price (INR)")
