@@ -199,11 +199,11 @@ from datetime import datetime, timedelta
 st.set_page_config(layout="wide")
 
 # Title and description
-st.title("Enhanced Stock Market Prediction")
+st.title("Stock Market Prediction")
 st.write("Fetch stock data and predict prices using an optimized XGBoost model.")
 
 # User input for stock ticker
-ticker = st.text_input("Enter Stock Ticker (e.g., AAPL, NVDA): ", "NVDA")
+ticker = st.text_input("Enter Stock Ticker (e.g., AMZN,NVDA): ", "NVDA")
 
 # Load stock data
 data = yf.download(ticker, period="2y")
@@ -226,9 +226,9 @@ else:
     data['Date'] = data.index
     data['Day'] = data['Date'].dt.dayofweek
 
-    # Convert currency (assuming 1 USD = 83 INR)
-    exchange_rate = 83
-    data[['Open', 'Close', 'High', 'Low']] *= exchange_rate
+  # Convert currency (assuming a fixed exchange rate, e.g., 1 USD = 83 INR)
+    exchange_rate = 83  # Example conversion rate (USD to INR)
+    data[['Open', 'Close', 'High', 'Low']] = data[['Open', 'Close', 'High', 'Low']] * exchange_rate
 
     # Feature engineering
     data['MA_5'] = data['Close'].rolling(window=5).mean()
