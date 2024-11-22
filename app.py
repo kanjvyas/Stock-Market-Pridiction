@@ -14,10 +14,10 @@ st.set_page_config(layout="wide")
 st.title("Stock Market Prediction")
 st.write("This app fetches stock data and predicts the price using the XGBoost model.")
 
-# User input for stock ticker
+# User input 
 ticker = st.text_input("Enter Stock Ticker (e.g., AAPL, TSLA): ", "AAPL")
 
-# Load stock data
+# Load data
 data = yf.download(ticker, period="1y")
 
 # Check if data was loaded
@@ -31,8 +31,8 @@ else:
     st.subheader("Stock Data")
     st.write(data)
 
-    # Convert currency (assuming a fixed exchange rate, e.g., 1 USD = 83 INR)
-    exchange_rate = 83  # Example conversion rate (USD to INR)
+    # Convert currency 
+    exchange_rate = 83  
     data[['Open', 'Close', 'High', 'Low']] = data[['Open', 'Close', 'High', 'Low']] * exchange_rate
 
     # Feature Engineering
