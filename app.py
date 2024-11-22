@@ -7,7 +7,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
 import plotly.graph_objects as go
 
-# Set page layout
+# page layout
 st.set_page_config(layout="wide")
 
 # Title and description
@@ -39,7 +39,7 @@ else:
     data['Target'] = data['Close'].shift(-1)  # Shift close price to create target variable
     data.dropna(inplace=True)  # Drop missing values
 
-    # Check if there are enough rows for train-test split
+    # Checking if there are enough rows for train-test split
     if len(data) < 2:
         st.error("Not enough data after processing for training. Please try a different ticker or time period.")
     else:
@@ -57,12 +57,12 @@ else:
         # Model prediction
         y_pred = model.predict(X_test)
 
-        # Calculate model accuracy
+        # model accuracy
         mae = mean_absolute_error(y_test, y_pred)
         rmse = np.sqrt(mean_squared_error(y_test, y_pred))
         r2 = r2_score(y_test, y_pred)
 
-        # Forecast for tomorrow and next 9 days
+        # Forecast for 10 days
         future_days = 10
         last_data = X.iloc[-1].values.reshape(1, -1)
         future_predictions = []
@@ -71,14 +71,14 @@ else:
             future_predictions.append(pred_price[0])
             last_data = np.append(last_data[:, 1:], pred_price).reshape(1, -1)
 
-        # Display accuracy metrics
+        # Display accuracy 
         st.subheader("Model Accuracy")
         st.write(f"Mean Absolute Error: {mae:.2f}")
         st.write(f"Root Mean Squared Error: {rmse:.2f}")
         st.write(f"Model Accuracy (R²): {r2:.2f}")
         st.progress(r2)  # Show R² score as progress
 
-        # Plot the data using Plotly
+        # Plot the data 
         st.subheader("Closing Price Prediction")
         fig1 = go.Figure()
         fig1.add_trace(go.Scatter(x=data.index[-len(y_test):], y=y_test, mode='lines', name='True Closing Price (INR)'))
@@ -91,7 +91,7 @@ else:
         )
         st.plotly_chart(fig1)
 
-        # Forecast plot using Plotly
+        # Forecast plot 
         st.subheader("Forecasted Closing Prices for Next 10 Days")
         future_dates = pd.date_range(start=data.index[-1] + pd.Timedelta(days=1), periods=future_days)
         fig2 = go.Figure()
@@ -104,7 +104,7 @@ else:
         )
         st.plotly_chart(fig2)
 
-        # Display tomorrow and next 9 days' forecasted prices
+        # 10 days' forecasted prices
         forecast_table = pd.DataFrame({
             "Day": ["Tomorrow"] + [f"Day {i}" for i in range(2, 11)],
             "Forecasted Close Price (INR)": future_predictions

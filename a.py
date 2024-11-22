@@ -117,3 +117,4 @@ else:
             "Forecasted Price (INR)": future_predictions
         })
         st.write(forecast_df)
+
