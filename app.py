@@ -15,7 +15,7 @@ st.title("Stock Market Prediction")
 st.write("This app fetches stock data and predicts the price using the XGBoost model.")
 
 # User input 
-ticker = st.text_input("Enter Stock Ticker (e.g., AAPL, TSLA): ", "AAPL")
+ticker = st.text_input("Enter Stock Ticker (e.g., AAPL, TSLA): ", "TSLA")
 
 # Load data
 data = yf.download(ticker, period="1y")
@@ -32,11 +32,11 @@ else:
     st.write(data)
 
     # Convert currency 
-    exchange_rate = 83  
+    exchange_rate = 84
     data[['Open', 'Close', 'High', 'Low']] = data[['Open', 'Close', 'High', 'Low']] * exchange_rate
 
     # Feature Engineering
-    data['Target'] = data['Close'].shift(-1)
+    data['Target'] = data['Close'].shift(-1)  
     data.dropna(inplace=True)  
 
     # Checking if there are enough rows for train-test split
@@ -104,10 +104,10 @@ else:
         )
         st.plotly_chart(fig2)
 
-        # 10 days' forecasted prices
-        forecast_table = pd.DataFrame({
-            "Day": ["Tomorrow"] + [f"Day {i}" for i in range(2, 11)],
-            "Forecasted Close Price (INR)": future_predictions
+        # Display forecasted price table
+        st.subheader("Forecasted Prices")
+        forecast_df = pd.DataFrame({
+            "Date": future_dates,
+            "Forecasted Price (INR)": future_predictions
         })
-        st.subheader("Forecasted Prices for Tomorrow and Next 10 Days")
-        st.table(forecast_table)
+        st.write(forecast_df)

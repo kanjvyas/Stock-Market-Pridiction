@@ -17,7 +17,7 @@ st.title("Stock Market Prediction")
 st.write("Fetch stock data and predict prices using an optimized XGBoost model.")
 
 # User input for stock ticker
-ticker = st.text_input("Enter Stock Ticker (e.g., AMZN,NVDA): ", "NVDA")
+ticker = st.text_input("Enter Stock Ticker (e.g., AMZN,TSLA): ", "TSLA")
 
 # Load stock data
 data = yf.download(ticker, period="2y")
