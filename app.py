@@ -109,5 +109,5 @@ else:
             "Day": ["Tomorrow"] + [f"Day {i}" for i in range(2, 11)],
             "Forecasted Close Price (INR)": future_predictions
         })
-        st.subheader("Forecasted Prices for Tomorrow and Next 9 Days")
+        st.subheader("Forecasted Prices for Tomorrow and Next 10 Days")
         st.table(forecast_table)
