@@ -1,90 +1,3 @@
-# import streamlit as st
-# import yfinance as yf
-# import pandas as pd
-# import numpy as np
-# from xgboost import XGBRegressor
-# from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-# from sklearn.model_selection import train_test_split
-# import matplotlib.pyplot as plt
-
-# # Set page layout
-# st.set_page_config(layout="wide")
-
-# # Title and description
-# st.title("Stock Market Prediction ")
-# st.write("This app fetches stock data and predicts the  price using the XGBoost model.")
-
-# # User input for stock ticker
-# ticker = st.text_input("Enter Stock Ticker (e.g., AAPL, TSLA): ", "AAPL")
-
-# # Load stock data
-# data = yf.download(ticker, period="1y")
-# data = data[['Open', 'Close', 'High', 'Low']]  # Select relevant columns
-
-# # Display raw data
-# st.subheader("Stock Data")
-# st.write(data)
-
-# # Convert currency (assuming a fixed exchange rate, e.g., 1 USD = 83 INR)
-# exchange_rate = 83  # Example conversion rate (USD to INR)
-# data[['Open', 'Close', 'High', 'Low']] = data[['Open', 'Close', 'High', 'Low']] * exchange_rate
-
-# # Feature Engineering
-# data['Target'] = data['Close'].shift(-1)  # Shift close price to create target variable
-# data.dropna(inplace=True)  # Drop missing values
-
-# # Split data into features and target
-# X = data[['Open', 'High', 'Low', 'Close']]
-# y = data['Target']
-
-# # Train-test split
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# # Model training
-# model = XGBRegressor()
-# model.fit(X_train, y_train)
-
-# # Model prediction
-# y_pred = model.predict(X_test)
-
-# # Calculate model accuracy
-# mae = mean_absolute_error(y_test, y_pred)
-# rmse = np.sqrt(mean_squared_error(y_test, y_pred))
-# r2 = r2_score(y_test, y_pred)
-
-# # Forecast for the next 10 days
-# future_days = 10
-# last_data = X.iloc[-1].values.reshape(1, -1)
-# future_predictions = []
-# for _ in range(future_days):
-#     pred_price = model.predict(last_data)
-#     future_predictions.append(pred_price[0])
-#     last_data = np.append(last_data[:, 1:], pred_price).reshape(1, -1)
-
-# # Display accuracy metrics
-# st.subheader("Model Accuracy")
-# st.write(f"Mean Absolute Error: {mae:.2f}")
-# st.write(f"Root Mean Squared Error: {rmse:.2f}")
-# st.write(f"Model Accuracy: {r2:.2f}")
-# st.progress(r2)  # Show R² score as progress
-
-# # Plot the data
-# st.subheader("Closing Price Prediction")
-# plt.figure(figsize=(18, 7))
-# plt.plot(data.index[-len(y_test):], y_test, label="True Closing Price (INR)")
-# plt.plot(data.index[-len(y_test):], y_pred, label="Predicted Closing Price (INR)")
-# plt.legend()
-# st.pyplot(plt)
-
-# # Forecast plot
-# st.subheader("Forecasted Closing Prices for Next 10 Days")
-# plt.figure(figsize=(18, 7))
-# plt.plot(range(1, future_days + 1), future_predictions, marker='o', label="Forecasted Close Price (INR)")
-# plt.xlabel("Days Ahead")
-# plt.ylabel("Price (INR)")
-# plt.legend()
-# st.pyplot(plt)
-
 import streamlit as st
 import yfinance as yf
 import pandas as pd
@@ -92,7 +5,7 @@ import numpy as np
 from xgboost import XGBRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
-import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 
 # Set page layout
 st.set_page_config(layout="wide")
@@ -149,7 +62,7 @@ else:
         rmse = np.sqrt(mean_squared_error(y_test, y_pred))
         r2 = r2_score(y_test, y_pred)
 
-        # Forecast for the next 10 days
+        # Forecast for tomorrow and next 9 days
         future_days = 10
         last_data = X.iloc[-1].values.reshape(1, -1)
         future_predictions = []
@@ -165,19 +78,36 @@ else:
         st.write(f"Model Accuracy (R²): {r2:.2f}")
         st.progress(r2)  # Show R² score as progress
 
-        # Plot the data
+        # Plot the data using Plotly
         st.subheader("Closing Price Prediction")
-        plt.figure(figsize=(18, 7))
-        plt.plot(data.index[-len(y_test):], y_test, label="True Closing Price (INR)")
-        plt.plot(data.index[-len(y_test):], y_pred, label="Predicted Closing Price (INR)")
-        plt.legend()
-        st.pyplot(plt)
+        fig1 = go.Figure()
+        fig1.add_trace(go.Scatter(x=data.index[-len(y_test):], y=y_test, mode='lines', name='True Closing Price (INR)'))
+        fig1.add_trace(go.Scatter(x=data.index[-len(y_test):], y=y_pred, mode='lines', name='Predicted Closing Price (INR)'))
+        fig1.update_layout(
+            title="Actual vs Predicted Closing Prices",
+            xaxis_title="Date",
+            yaxis_title="Price (INR)",
+            legend_title="Legend"
+        )
+        st.plotly_chart(fig1)
 
-        # Forecast plot
+        # Forecast plot using Plotly
         st.subheader("Forecasted Closing Prices for Next 10 Days")
-        plt.figure(figsize=(18, 7))
-        plt.plot(range(1, future_days + 1), future_predictions, marker='o', label="Forecasted Close Price (INR)")
-        plt.xlabel("Days Ahead")
-        plt.ylabel("Price (INR)")
-        plt.legend()
-        st.pyplot(plt)
+        future_dates = pd.date_range(start=data.index[-1] + pd.Timedelta(days=1), periods=future_days)
+        fig2 = go.Figure()
+        fig2.add_trace(go.Scatter(x=future_dates, y=future_predictions, mode='lines+markers', name="Forecasted Close Price (INR)"))
+        fig2.update_layout(
+            title="Forecast for the Next 10 Days",
+            xaxis_title="Date",
+            yaxis_title="Price (INR)",
+            legend_title="Legend"
+        )
+        st.plotly_chart(fig2)
+
+        # Display tomorrow and next 9 days' forecasted prices
+        forecast_table = pd.DataFrame({
+            "Day": ["Tomorrow"] + [f"Day {i}" for i in range(2, 11)],
+            "Forecasted Close Price (INR)": future_predictions
+        })
+        st.subheader("Forecasted Prices for Tomorrow and Next 9 Days")
+        st.table(forecast_table)
