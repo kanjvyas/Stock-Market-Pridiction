@@ -36,8 +36,8 @@ else:
     data[['Open', 'Close', 'High', 'Low']] = data[['Open', 'Close', 'High', 'Low']] * exchange_rate
 
     # Feature Engineering
-    data['Target'] = data['Close'].shift(-1)  # Shift close price to create target variable
-    data.dropna(inplace=True)  # Drop missing values
+    data['Target'] = data['Close'].shift(-1)
+    data.dropna(inplace=True)  
 
     # Checking if there are enough rows for train-test split
     if len(data) < 2:
@@ -76,7 +76,7 @@ else:
         st.write(f"Mean Absolute Error: {mae:.2f}")
         st.write(f"Root Mean Squared Error: {rmse:.2f}")
         st.write(f"Model Accuracy (R²): {r2:.2f}")
-        st.progress(r2)  # Show R² score as progress
+        st.progress(r2)  
 
         # Plot the data 
         st.subheader("Closing Price Prediction")
