@@ -1,0 +1,436 @@
+# # import streamlit as st
+# # import yfinance as yf
+# # import pandas as pd
+# # import numpy as np
+# # from xgboost import XGBRegressor
+# # from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+# # from sklearn.model_selection import train_test_split
+# # import plotly.graph_objects as go
+
+# # # Set page layout
+# # st.set_page_config(layout="wide", page_title="Stock Market Prediction")
+
+# # # Sidebar inputs
+# # st.sidebar.title("Stock Prediction Settings")
+# # ticker = st.sidebar.text_input("Enter Stock Ticker (e.g., HDB, BOAT):", "HDB")
+# # forecast_days = st.sidebar.slider("Forecast Days", min_value=1, max_value=30, value=10)
+
+# # # Title and description
+# # st.title("Stock Market Prediction App")
+# # st.write("This app fetches stock data and predicts future prices using the XGBoost model.")
+
+# # # Fetch stock data
+# # with st.spinner("Fetching stock data..."):
+# #     data = yf.download(ticker, period="1y")
+
+# # if data.empty:
+# #     st.error("No data available for this ticker. Please check the symbol or try another.")
+# # else:
+# #     # Display raw data
+# #     st.subheader("Stock Data")
+# #     st.write(data)
+
+# #     # Feature Engineering
+# #     data = data[['Open', 'Close', 'High', 'Low']]
+# #     data['Target'] = data['Close'].shift(-1)  # Predict the next day's closing price
+# #     data.dropna(inplace=True)
+
+# #     # Ensure enough data for training
+# #     if len(data) < 2:
+# #         st.error("Not enough data after processing for training. Please try a different ticker or time period.")
+# #     else:
+# #         # Split data into features and target
+# #         X = data[['Open', 'High', 'Low', 'Close']]
+# #         y = data['Target']
+
+# #         # Train-test split
+# #         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# #         # Train model
+# #         model = XGBRegressor()
+# #         model.fit(X_train, y_train)
+
+# #         # Predict and evaluate
+# #         y_pred = model.predict(X_test)
+# #         mae = mean_absolute_error(y_test, y_pred)
+# #         rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+# #         r2 = r2_score(y_test, y_pred)
+
+# #         # Display metrics in a column layout
+# #         st.subheader("Model Metrics")
+# #         col1, col2, col3 = st.columns(3)
+# #         col1.metric("Mean Absolute Error (MAE)", f"{mae:.2f}")
+# #         col2.metric("Root Mean Squared Error (RMSE)", f"{rmse:.2f}")
+# #         col3.metric("R² Score", f"{r2:.2f}")
+
+# #         # Forecast future prices
+# #         last_data = X.iloc[-1].values.reshape(1, -1)
+# #         future_predictions = []
+# #         for _ in range(forecast_days):
+# #             pred_price = model.predict(last_data)
+# #             future_predictions.append(pred_price[0])
+# #             last_data = np.append(last_data[:, 1:], pred_price).reshape(1, -1)
+
+# #         # Plot actual vs predicted prices
+# #         st.subheader("Closing Price Prediction")
+# #         fig1 = go.Figure()
+# #         fig1.add_trace(go.Scatter(x=data.index[-len(y_test):], y=y_test, mode='lines', name='True Closing Price'))
+# #         fig1.add_trace(go.Scatter(x=data.index[-len(y_test):], y=y_pred, mode='lines', name='Predicted Closing Price'))
+# #         fig1.update_layout(
+# #             title="Actual vs Predicted Closing Prices",
+# #             xaxis_title="Date",
+# #             yaxis_title="Price",
+# #             legend_title="Legend"
+# #         )
+# #         st.plotly_chart(fig1)
+
+# #         # Plot forecasted prices
+# #         st.subheader("Forecasted Closing Prices for Next 10 Days")
+# #         future_dates = pd.date_range(start=data.index[-1] + pd.Timedelta(days=1), periods=forecast_days)
+# #         fig2 = go.Figure()
+# #         fig2.add_trace(go.Scatter(x=future_dates, y=future_predictions, mode='lines+markers', name="Forecasted Close Price"))
+# #         fig2.update_layout(
+# #             title="Forecast for the Next 10 Days",
+# #             xaxis_title="Date",
+# #             yaxis_title="Price",
+# #             legend_title="Legend"
+# #         )
+# #         st.plotly_chart(fig2)
+
+# #         # Display forecasted price table
+# #         st.subheader("Forecasted Prices")
+# #         forecast_df = pd.DataFrame({
+# #             "Date": future_dates,
+# #             "Forecasted Price": future_predictions
+# #         })
+# #         st.write(forecast_df)
+
+# #         # Add download button
+# #         csv = forecast_df.to_csv(index=False)
+# #         st.download_button("Download Forecast Data", data=csv, file_name="forecast.csv", mime="text/csv")
+
+# # import streamlit as st
+# # import yfinance as yf
+# # import pandas as pd
+# # import numpy as np
+# # from xgboost import XGBRegressor
+# # from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+# # from sklearn.model_selection import train_test_split
+# # import plotly.graph_objects as go
+
+# # # Set page layout
+# # st.set_page_config(layout="wide", page_title="Stock Market Prediction")
+
+# # # Apply custom CSS for styling
+# # st.markdown(
+# #     """
+# #     <style>
+# #     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+# #     body {
+# #         font-family: 'Roboto', sans-serif;
+# #     }
+
+# #     .main {
+# #         background-color: #f0f2f6;
+# #         background-image: url('https://www.example.com/your-background-image.jpg');
+# #         background-size: cover;
+# #         background-position: center;
+# #         color: #333;
+# #     }
+
+# #     h1, h2, h3, h4, h5, h6 {
+# #         color: #2c3e50;
+# #     }
+
+# #     .stSidebar {
+# #         background-color: #34495e;
+# #         color: white;
+# #     }
+
+# #     .stSidebar input, .stSidebar select, .stSidebar button {
+# #         background-color: #2c3e50;
+# #         color: white;
+# #         border: none;
+# #         border-radius: 4px;
+# #         padding: 8px;
+# #         margin-bottom: 10px;
+# #     }
+
+# #     .stButton > button {
+# #         background-color: #3498db;
+# #         color: white;
+# #         border: none;
+# #         border-radius: 4px;
+# #         padding: 8px 16px;
+# #         margin-top: 10px;
+# #     }
+
+# #     .stButton > button:hover {
+# #         background-color: #2980b9;
+# #     }
+
+# #     .metric-container {
+# #         background-color: #ecf0f1;
+# #         padding: 10px;
+# #         border-radius: 8px;
+# #         margin-bottom: 10px;
+# #         text-align: center;
+# #     }
+# #     </style>
+# #     """,
+# #     unsafe_allow_html=True
+# # )
+
+# # # Sidebar inputs
+# # st.sidebar.title("Stock Prediction Settings")
+# # ticker = st.sidebar.text_input("Enter Stock Ticker (e.g., HDB, BOAT):", "HDB")
+# # forecast_days = st.sidebar.slider("Forecast Days", min_value=1, max_value=30, value=10)
+
+# # # Title and description
+# # st.title("📈 Stock Market Prediction App")
+# # st.write("This app fetches stock data and predicts future prices using the XGBoost model.")
+
+# # # Fetch stock data
+# # with st.spinner("Fetching stock data..."):
+# #     data = yf.download(ticker, period="1y")
+
+# # if data.empty:
+# #     st.error("No data available for this ticker. Please check the symbol or try another.")
+# # else:
+# #     # Display raw data
+# #     st.subheader("Stock Data")
+# #     st.write(data)
+
+# #     # Feature Engineering
+# #     data = data[['Open', 'Close', 'High', 'Low']]
+# #     data['Target'] = data['Close'].shift(-1)  # Predict the next day's closing price
+# #     data.dropna(inplace=True)
+
+# #     # Ensure enough data for training
+# #     if len(data) < 2:
+# #         st.error("Not enough data after processing for training. Please try a different ticker or time period.")
+# #     else:
+# #         # Split data into features and target
+# #         X = data[['Open', 'High', 'Low', 'Close']]
+# #         y = data['Target']
+
+# #         # Train-test split
+# #         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# #         # Train model
+# #         model = XGBRegressor()
+# #         model.fit(X_train, y_train)
+
+# #         # Predict and evaluate
+# #         y_pred = model.predict(X_test)
+# #         mae = mean_absolute_error(y_test, y_pred)
+# #         rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+# #         r2 = r2_score(y_test, y_pred)
+
+# #         # Display metrics in a column layout
+# #         st.subheader("Model Metrics")
+# #         col1, col2, col3 = st.columns(3)
+# #         col1.metric("Mean Absolute Error (MAE)", f"{mae:.2f}")
+# #         col2.metric("Root Mean Squared Error (RMSE)", f"{rmse:.2f}")
+# #         col3.metric("R² Score", f"{r2:.2f}")
+
+# #         # Forecast future prices
+# #         last_data = X.iloc[-1].values.reshape(1, -1)
+# #         future_predictions = []
+# #         for _ in range(forecast_days):
+# #             pred_price = model.predict(last_data)
+# #             future_predictions.append(pred_price[0])
+# #             last_data = np.append(last_data[:, 1:], pred_price).reshape(1, -1)
+
+# #         # Plot actual vs predicted prices
+# #         st.subheader("Closing Price Prediction")
+# #         fig1 = go.Figure()
+# #         fig1.add_trace(go.Scatter(x=data.index[-len(y_test):], y=y_test, mode='lines', name='True Closing Price'))
+# #         fig1.add_trace(go.Scatter(x=data.index[-len(y_test):], y=y_pred, mode='lines', name='Predicted Closing Price'))
+# #         fig1.update_layout(
+# #             title="Actual vs Predicted Closing Prices",
+# #             xaxis_title="Date",
+# #             yaxis_title="Price",
+# #             legend_title="Legend"
+# #         )
+# #         st.plotly_chart(fig1)
+
+# #         # Plot forecasted prices
+# #         st.subheader("Forecasted Closing Prices for Next 10 Days")
+# #         future_dates = pd.date_range(start=data.index[-1] + pd.Timedelta(days=1), periods=forecast_days)
+# #         fig2 = go.Figure()
+# #         fig2.add_trace(go.Scatter(x=future_dates, y=future_predictions, mode='lines+markers', name="Forecasted Close Price"))
+# #         fig2.update_layout(
+# #             title="Forecast for the Next 10 Days",
+# #             xaxis_title="Date",
+# #             yaxis_title="Price",
+# #             legend_title="Legend"
+# #         )
+# #         st.plotly_chart(fig2)
+
+# #         # Display forecasted price table
+# #         st.subheader("Forecasted Prices")
+# #         forecast_df = pd.DataFrame({
+# #             "Date": future_dates,
+# #             "Forecasted Price": future_predictions
+# #         })
+# #         st.write(forecast_df)
+
+# #         # Add download button
+# #         csv = forecast_df.to_csv(index=False)
+# #         st.download_button("Download Forecast Data", data=csv, file_name="forecast.csv", mime="text/csv")
+
+
+# import streamlit as st
+# import yfinance as yf
+# import pandas as pd
+# import numpy as np
+# from xgboost import XGBRegressor
+# from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+# from sklearn.model_selection import train_test_split
+# import plotly.graph_objects as go
+
+# # Set page layout
+# st.set_page_config(page_title="Stock Market Prediction", layout="wide")
+
+# # Custom CSS for advanced styling
+# st.markdown(
+#     """
+#     <style>
+#     /* Background Styling */
+#     .main {
+#         background: linear-gradient(to right, #2c3e50, #4ca1af);
+#         color: #ffffff;
+#         font-family: 'Poppins', sans-serif;
+#     }
+
+#     /* Navbar Styling */
+#     .navbar {
+#         background-color: #1c2833;
+#         padding: 10px;
+#         border-radius: 10px;
+#         margin-bottom: 20px;
+#         text-align: center;
+#     }
+#     .navbar a {
+#         color: #f7f9fc;
+#         text-decoration: none;
+#         font-weight: bold;
+#         padding: 10px 20px;
+#         border-radius: 5px;
+#         transition: background-color 0.3s ease;
+#     }
+#     .navbar a:hover {
+#         background-color: #4ca1af;
+#         color: #ffffff;
+#     }
+
+#     /* Metric Cards */
+#     .metric-card {
+#         background-color: #1c2833;
+#         padding: 15px;
+#         border-radius: 10px;
+#         text-align: center;
+#         color: #f7f9fc;
+#         box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+#     }
+
+#     /* Footer Styling */
+#     .footer {
+#         text-align: center;
+#         margin-top: 20px;
+#         padding: 10px;
+#         color: #ffffff;
+#         font-size: 14px;
+#     }
+#     </style>
+#     """,
+#     unsafe_allow_html=True
+# )
+
+# # Navbar
+# st.markdown(
+#     """
+#     <div class="navbar">
+#         <a href="#home">Home</a>
+#         <a href="#data">Stock Data</a>
+#         <a href="#prediction">Prediction</a>
+#         <a href="#forecast">Forecast</a>
+#     </div>
+#     """,
+#     unsafe_allow_html=True
+# )
+
+# # Title and description
+# st.title("Stock Market Prediction Website")
+# st.write("This advanced web app fetches stock data and predicts future prices using machine learning.")
+
+# # Sidebar inputs
+# st.sidebar.title(" Settings")
+# ticker = st.sidebar.text_input("Enter Stock Ticker (e.g., HDB, BOAT):", "HDB")
+# forecast_days = st.sidebar.slider("Forecast Days", min_value=1, max_value=30, value=10)
+
+# # Fetch stock data
+# with st.spinner("Fetching stock data..."):
+#     data = yf.download(ticker, period="1y")
+
+# if data.empty:
+#     st.error("No data available for this ticker. Please check the symbol or try another.")
+# else:
+#     # Display raw data
+#     st.markdown("<h2 id='data'>Stock Data</h2>", unsafe_allow_html=True)
+#     st.write(data)
+
+#     # Feature Engineering
+#     data = data[['Open', 'Close', 'High', 'Low']]
+#     data['Target'] = data['Close'].shift(-1)  # Predict the next day's closing price
+#     data.dropna(inplace=True)
+
+#     if len(data) < 2:
+#         st.error("Not enough data after processing for training. Please try a different ticker or time period.")
+#     else:
+#         # Split data into features and target
+#         X = data[['Open', 'High', 'Low', 'Close']]
+#         y = data['Target']
+
+#         # Train-test split
+#         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+#         # Train model
+#         model = XGBRegressor()
+#         model.fit(X_train, y_train)
+
+#         # Predict and evaluate
+#         y_pred = model.predict(X_test)
+#         mae = mean_absolute_error(y_test, y_pred)
+#         rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+#         r2 = r2_score(y_test, y_pred)
+
+#         # Metrics Section
+#         st.markdown("<h2 id='prediction'>Model Metrics</h2>", unsafe_allow_html=True)
+#         col1, col2, col3 = st.columns(3)
+#         col1.markdown(f"<div class='metric-card'><h4>MAE</h4><p>{mae:.2f}</p></div>", unsafe_allow_html=True)
+#         col2.markdown(f"<div class='metric-card'><h4>RMSE</h4><p>{rmse:.2f}</p></div>", unsafe_allow_html=True)
+#         col3.markdown(f"<div class='metric-card'><h4>R² Score</h4><p>{r2:.2f}</p></div>", unsafe_allow_html=True)
+
+#         # Forecast future prices
+#         last_data = X.iloc[-1].values.reshape(1, -1)
+#         future_predictions = []
+#         for _ in range(forecast_days):
+#             pred_price = model.predict(last_data)
+#             future_predictions.append(pred_price[0])
+#             last_data = np.append(last_data[:, 1:], pred_price).reshape(1, -1)
+
+#         # Plot actual vs predicted prices
+#         st.markdown("<h2 id='forecast'> Forecasted Prices</h2>", unsafe_allow_html=True)
+#         future_dates = pd.date_range(start=data.index[-1] + pd.Timedelta(days=1), periods=forecast_days)
+#         forecast_df = pd.DataFrame({"Date": future_dates, "Forecasted Price": future_predictions})
+#         st.write(forecast_df)
+
+#         # Add download button
+#         csv = forecast_df.to_csv(index=False)
+#         st.download_button("Download Forecast Data", data=csv, file_name="forecast.csv", mime="text/csv")
+
+# # Footer
+# st.markdown("<div class='footer'>© 2024 Stock Market Prediction App. All rights reserved.</div>", unsafe_allow_html=True)
