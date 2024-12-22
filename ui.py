@@ -10,6 +10,8 @@ import plotly.graph_objects as go
 # Set page layout
 st.set_page_config(page_title="Stock Market Prediction", layout="wide", page_icon="📈")
 
+st.image("https://i.postimg.cc/j2tdGvv5/new-removebg-preview.png" , width=300) 
+
 # Custom CSS to style the header with transparency
 custom_css = """
 <style>
