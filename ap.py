@@ -129,7 +129,7 @@ st.sidebar.header("📊 Stock Market Prediction")
 
 
 # User Input in Sidebar
-ticker = st.sidebar.text_input("Enter Stock Ticker (e.g., AAPL, MSFT):", "HDB")
+ticker = st.sidebar.text_input("Enter Stock Ticker (e.g., HDB, BOAT):", "HDB")
 st.sidebar.write("Tip: Use a ticker from Yahoo Finance!")
 
 # Fetch Stock Data
@@ -181,7 +181,7 @@ else:
             last_data = np.append(last_data[:, 1:], pred_price).reshape(1, -1)
 
         # Model Performance Metrics
-        st.subheader("📈 Model Accuracy")
+        st.subheader("📈 Model Metrics")
         col1, col2, col3 = st.columns(3)
         col1.metric("Mean Absolute Error", f"{mae:.2f}")
         col2.metric("Root Mean Squared Error", f"{rmse:.2f}")
