@@ -167,13 +167,14 @@ else:
         mae = mean_absolute_error(y_test, y_pred)
         rmse = np.sqrt(mean_squared_error(y_test, y_pred))
         r2 = r2_score(y_test, y_pred)
-
+        
         # Metrics Section
         st.markdown("<h2 id='prediction'> 📈 Model Metrics</h2>", unsafe_allow_html=True)
         col1, col2, col3 = st.columns(3)
         col1.metric("MAE", f"{mae:.2f}")
         col2.metric("RMSE", f"{rmse:.2f}")
         col3.metric("R² Score", f"{r2:.2f}")
+        st.progress(r2)
 
        # Historical and Predicted Data Visualization
         st.subheader("📉 Actual vs Predicted Prices")
