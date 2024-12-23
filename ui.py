@@ -1,3 +1,4 @@
+from matplotlib.axis import Ticker
 import streamlit as st
 import yfinance as yf
 import pandas as pd
@@ -123,14 +124,15 @@ sidebar_css = """
 # Inject the CSS into the Streamlit app
 st.markdown(sidebar_css, unsafe_allow_html=True)
 
-# Title and description
-st.title("📊 Stock Market Prediction ")
-st.write("This advanced web app fetches stock data and predicts future prices using machine learning.")
-
 # Sidebar inputs
 st.sidebar.title("⚙️ Settings")
 ticker = st.sidebar.text_input("Enter Stock Ticker (e.g., HDB, BOAT):", "HDB")
 forecast_days = st.sidebar.slider("Forecast Days", min_value=1, max_value=30, value=10)
+
+# Title and description
+st.title(f"{ticker.upper()} Stock Price Prediction")
+st.header("Historical Stock Data")
+st.write("The table below shows historical data for the selected stock.")
 
 # Fetch stock data
 with st.spinner("Fetching stock data..."):
@@ -140,7 +142,6 @@ if data.empty:
     st.error("No data available for this ticker. Please check the symbol or try another.")
 else:
     # Display raw data
-    st.markdown("<h2 id='data'>Stock Data</h2>", unsafe_allow_html=True)
     st.write(data)
 
     # Feature Engineering
