@@ -450,7 +450,7 @@
 # st.markdown("---")  # Add a horizontal line for separation
 # col1, col2, col3 = st.columns([3, 6, 1])  # Adjust column widths to center the footer
 # with col2:
-# #     st.write("© 2024 Stock Market Prediction App. All rights reserved.", align="center")
+#     st.write("© 2024 Stock Market Prediction App. All rights reserved.", align="center")
 
 # import streamlit as st
 # import yfinance as yf
@@ -663,7 +663,6 @@
 # with col2:
 #     st.write("© 2024 Stock Market Prediction App. All rights reserved.", align="center")
 
-
 import streamlit as st
 import yfinance as yf
 import pandas as pd
@@ -672,7 +671,6 @@ from xgboost import XGBRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
 import plotly.graph_objects as go
-import holidays
 
 # Page Config
 st.set_page_config(layout="wide", page_title="Stock Market Prediction", page_icon="📈")
@@ -822,15 +820,16 @@ else:
         future_days = 10
         last_data = X.iloc[-1].values.reshape(1, -1)
         future_predictions = []
-        us_holidays = holidays.US()
         current_date = pd.Timestamp.now()
 
+        # Adjust future predictions to start from the current date and exclude weekends
         while len(future_predictions) < future_days:
-            current_date += pd.Timedelta(days=1)
-            if current_date.weekday() < 5 and current_date not in us_holidays:
+            # Skip weekends (Saturday = 5, Sunday = 6)
+            if current_date.weekday() < 5:
                 pred_price = model.predict(last_data)
                 future_predictions.append(pred_price[0])
                 last_data = np.append(last_data[:, 1:], pred_price).reshape(1, -1)
+            current_date += pd.Timedelta(days=1)
 
         # Model Performance Metrics
         st.subheader("📈 Model Metrics")
@@ -856,8 +855,9 @@ else:
 
         # Forecast Visualization
         st.subheader("🔮 Forecasted Prices (Next 10 Days)")
-        future_dates = pd.date_range(start=data.index[-1] + pd.Timedelta(days=1), periods=future_days * 2).to_series()
-        future_dates = future_dates[~((future_dates.dt.weekday >= 5) | (future_dates.isin(us_holidays)))][:future_days]
+        future_dates = pd.date_range(start=pd.Timestamp.now(), periods=future_days * 2).to_series()
+        # Exclude weekends
+        future_dates = future_dates[future_dates.dt.weekday < 5][:future_days]
         fig2 = go.Figure()
         fig2.add_trace(go.Scatter(x=future_dates, y=future_predictions, mode='lines+markers', name="Forecasted Prices", line=dict(color='#00ff7f')))
         fig2.update_layout(
@@ -879,4 +879,3 @@ st.markdown("---")  # Add a horizontal line for separation
 col1, col2, col3 = st.columns([3, 6, 1])  # Adjust column widths to center the footer
 with col2:
     st.write("© 2024 Stock Market Prediction App. All rights reserved.", align="center")
-
