@@ -662,6 +662,10 @@
 # col1, col2, col3 = st.columns([3, 6, 1])  # Adjust column widths to center the footer
 # with col2:
 #     st.write("© 2024 Stock Market Prediction App. All rights reserved.", align="center")
+# This Python code creates a Streamlit web application for stock market prediction. Here is a summary
+# of what the code does:
+# This Python code creates a Streamlit web application for stock market prediction. Here is a summary
+
 
 import streamlit as st
 import yfinance as yf
@@ -879,3 +883,6 @@ st.markdown("---")  # Add a horizontal line for separation
 col1, col2, col3 = st.columns([3, 6, 1])  # Adjust column widths to center the footer
 with col2:
     st.write("© 2024 Stock Market Prediction App. All rights reserved.", align="center")
+
+
+
