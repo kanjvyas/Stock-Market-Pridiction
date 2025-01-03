@@ -652,10 +652,10 @@
 #         )
 #         st.plotly_chart(fig2, use_container_width=True)
 
-#         # Forecast Table
-#         st.subheader("📋 Forecasted Prices Table")
-#         forecast_df = pd.DataFrame({"Date": future_dates, "Forecasted Price": future_predictions})
-#         st.dataframe(forecast_df.style.set_properties(**{'background-color': '#1e1e1e', 'color': '#ffffff'}))
+        # # Forecast Table
+        # st.subheader("📋 Forecasted Prices Table")
+        # forecast_df = pd.DataFrame({"Date": future_dates, "Forecasted Price": future_predictions})
+        # st.dataframe(forecast_df.style.set_properties(**{'background-color': '#1e1e1e', 'color': '#ffffff'}))
 
 # # Footer
 # st.markdown("---")  # Add a horizontal line for separation
@@ -849,34 +849,84 @@ else:
         fig1.add_trace(go.Scatter(x=data.index[-len(y_test):], y=y_test, mode='lines', name='True Closing Price', line=dict(color='#00ff7f')))
         fig1.add_trace(go.Scatter(x=data.index[-len(y_test):], y=y_pred, mode='lines', name='Predicted Closing Price', line=dict(color='#ff4500')))
         fig1.update_layout(
-            template='plotly_dark',
+            template='plotly_white',
             title="True vs Predicted Closing Prices",
             xaxis_title="Date",
             yaxis_title="Price",
             legend_title="Legend"
         )
         st.plotly_chart(fig1, use_container_width=True)
-
-        # Forecast Visualization
-        st.subheader("🔮 Forecasted Prices (Next 10 Days)")
-        future_dates = pd.date_range(start=pd.Timestamp.now(), periods=future_days * 2).to_series()
-        # Exclude weekends
-        future_dates = future_dates[future_dates.dt.weekday < 5][:future_days]
+        
+           # Forecast Visualization
+        st.subheader("🔮 Forecasted Prices (Next 10 Business Days)")
+        # Calculate next 10 business days from today
+        future_dates = pd.date_range(start=pd.Timestamp.today(), periods=future_days, freq='B')  # 'B' for business days
         fig2 = go.Figure()
         fig2.add_trace(go.Scatter(x=future_dates, y=future_predictions, mode='lines+markers', name="Forecasted Prices", line=dict(color='#00ff7f')))
-        fig2.update_layout(
-            template='plotly_dark',
-            title="Forecast for Next 10 Days",
-            xaxis_title="Date",
-            yaxis_title="Price",
-            legend_title="Legend"
-        )
+        fig2.update_layout(template='plotly_dark', title="Forecast for Next 10 Business Days", xaxis_title="Date", yaxis_title="Price", legend_title="Legend")
         st.plotly_chart(fig2, use_container_width=True)
 
         # Forecast Table
-        st.subheader("📋 Forecasted Prices Table")
-        forecast_df = pd.DataFrame({"Date": future_dates, "Forecasted Price": future_predictions})
-        st.dataframe(forecast_df.style.set_properties(**{'background-color': '#1e1e1e', 'color': '#ffffff'}))
+st.subheader("📋 Forecasted Prices Table")
+forecast_df = pd.DataFrame({"Date": future_dates.date, "Forecasted Price": future_predictions})  # Use .date to remove time
+st.dataframe(
+    forecast_df.style.set_properties(**{'background-color': '#1e1e1e', 'color': '#ffffff', 'border': '1px solid #444'})
+)
+
+
+
+        # # Forecast Visualization
+        # st.subheader("🔮 Forecasted Prices (Next 10 Days)")
+        # future_dates = pd.date_range(start=pd.Timestamp.now(), periods=future_days * 2).to_series()
+        # # Exclude weekends
+        # future_dates = future_dates[future_dates.dt.weekday < 5][:future_days]
+        # fig2 = go.Figure()
+        # fig2.add_trace(go.Scatter(x=future_dates, y=future_predictions, mode='lines+markers', name="Forecasted Prices", line=dict(color='#00ff7f')))
+        # fig2.update_layout(
+        #     template='plotly_dark',
+        #     title="Forecast for Next 10 Days",
+        #     xaxis_title="Date",
+        #     yaxis_title="Price",
+        #     legend_title="Legend"
+        # )
+        # st.plotly_chart(fig2, use_container_width=True)
+        
+# # Create a DataFrame for future predictions
+# future_data = pd.DataFrame({
+#     "Date": future_dates,
+#     "Day": future_dates.dt.day_name(),
+#     "Forecasted Price": future_predictions
+# })
+
+# # Format the price column for better readability
+# future_data["Forecasted Price"] = future_data["Forecasted Price"].apply(lambda x: f"${x:.2f}")
+
+# # Display the forecast table
+# st.subheader("📅 Forecasted Prices Table")
+# st.write("The table below shows the predicted stock prices for the next 10 trading days, along with the corresponding dates and days of the week.")
+# st.table(future_data)
+
+
+# # Custom CSS to reduce table size
+# table_css = """
+# <style>
+#     .stTable {
+#         font-size: 0.8rem;
+#         width: 50%;
+#         margin
+#     }
+# </style>
+# """
+# st.markdown(table_css, unsafe_allow_html=True)
+
+
+        # # Display forecasted price table
+        # st.subheader("Forecasted Prices")
+        # forecast_df = pd.DataFrame({
+        #     "Date": future_dates,
+        #     "Forecasted Price ": future_predictions
+        # })
+        # st.write(forecast_df)
 
 # Footer
 st.markdown("---")  # Add a horizontal line for separation
