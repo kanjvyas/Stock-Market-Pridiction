@@ -30,7 +30,7 @@ st.markdown(custom_css, unsafe_allow_html=True)
 
 
 # Set the path to your background image
-image_url = "https://wallpapercg.com/download/candlestick-pattern-7680x4320-19473.jpg"
+image_url = "https://wallpapers.com/images/hd/stock-market-green-red-candle-sticks-u8sypn2sbm22a0y3.jpgg"
 
 
 # Inject CSS to set the background image
@@ -102,7 +102,7 @@ st.markdown("""
 
 # Ticker selection after logo
 st.write("### Select a Stock Ticker")
-stock_tickers = ["NVDA", "TSLA", "GOOGL", "AMZN", "MSFT", "HDB", "BOAT", "ZOMATO.BO", "BAJAJFINSV.NS", "^NSEI",
+stock_tickers = ["BOAT", "TSLA", "GOOGL", "AMZN", "MSFT", "HDB", "NVDA", "ZOMATO.BO", "BAJAJFINSV.NS", "^NSEI",
 "^BSESN", "INFY.NS", "ADANIGREEN.NS", "ADANIENT.NS", "RELIANCE.NS", "ITC.NS", "HINDUNILVR.BO", "TCS.NS", "TATASTEEL.NS", "TATAPOWER.BO",
 "ADANIPOWER.NS", "AXISBANK.NS", "HDFCLIFE.BO", "ADANIPORTS.BO", "BAJAJFINSV.NS", "BAJAJ-AUTO.BO", "BHARTIARTL.BO", "CIPLA.BO", "ICICIBANK.NS", "INDUSINDBK.BO",
 "JSWSTEEL.NS", "KOTAKBANK.NS", "MARUTI.BO", "ONGC.BO", "SPARC.NS", "TATAMOTORS.BO", "TECHM.BO", "WIPRO.NS", "BANKBARODA.BO", "IRCTC.BO",
@@ -113,6 +113,7 @@ selected_ticker = st.selectbox("Select a Stock Ticker:", stock_tickers, index=0)
 custom_ticker = st.text_input("Or enter a custom ticker :").strip()
 
 # Use custom ticker if provided
+# sourcery skip: or-if-exp-identity
 ticker = custom_ticker if custom_ticker else selected_ticker
 st.write("Tip: Use a ticker from Yahoo Finance!")
 
