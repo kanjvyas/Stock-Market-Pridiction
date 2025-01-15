@@ -109,6 +109,7 @@ selected_ticker = st.sidebar.selectbox("Select a Stock Ticker:", stock_tickers, 
 custom_ticker = st.sidebar.text_input("Or enter a custom ticker :").strip()
 
 # Use custom ticker if provided
+# sourcery skip: or-if-exp-identity
 ticker = custom_ticker if custom_ticker else selected_ticker
 st.sidebar.write("Tip: Use a ticker from Yahoo Finance!")
 
@@ -188,7 +189,7 @@ else:
         )
         st.plotly_chart(fig1, use_container_width=True)
         
-           # Forecast Visualization
+# Forecast Visualization
         st.subheader("🔮 Forecasted Prices (Next 10 Business Days)")
         # Calculate next 10 business days from today
         future_dates = pd.date_range(start=pd.Timestamp.today(), periods=future_days, freq='B')  # 'B' for business days

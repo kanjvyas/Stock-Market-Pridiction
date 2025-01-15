@@ -193,26 +193,42 @@ else:
         )
         st.plotly_chart(fig1, use_container_width=True)
 
-        # Forecast Visualization
-        st.subheader("🔮 Forecasted Prices (Next 10 Days)")
-        future_dates = pd.date_range(start=pd.Timestamp.now(), periods=future_days * 2).to_series()
-        # Exclude weekends
-        future_dates = future_dates[future_dates.dt.weekday < 5][:future_days]
+        # # Forecast Visualization
+        # st.subheader("🔮 Forecasted Prices (Next 10 Days)")
+        # future_dates = pd.date_range(start=pd.Timestamp.now(), periods=future_days * 2).to_series()
+        # # Exclude weekends
+        # future_dates = future_dates[future_dates.dt.weekday < 5][:future_days]
+        # fig2 = go.Figure()
+        # fig2.add_trace(go.Scatter(x=future_dates, y=future_predictions, mode='lines+markers', name="Forecasted Prices", line=dict(color='#00ff7f')))
+        # fig2.update_layout(
+        #     template='plotly_dark',
+        #     title="Forecast for Next 10 Days",
+        #     xaxis_title="Date",
+        #     yaxis_title="Price",
+        #     legend_title="Legend"
+        # )
+        # st.plotly_chart(fig2, use_container_width=True)
+
+        # # Forecast Table
+        # st.subheader("📋 Forecasted Prices Table")
+        # forecast_df = pd.DataFrame({"Date": future_dates, "Forecasted Price": future_predictions})
+        # st.dataframe(forecast_df.style.set_properties(**{'background-color': '#1e1e1e', 'color': '#ffffff'}))
+
+           # Forecast Visualization
+        st.subheader("🔮 Forecasted Prices (Next 10 Business Days)")
+        # Calculate next 10 business days from today
+        future_dates = pd.date_range(start=pd.Timestamp.today(), periods=future_days, freq='B')  # 'B' for business days
         fig2 = go.Figure()
         fig2.add_trace(go.Scatter(x=future_dates, y=future_predictions, mode='lines+markers', name="Forecasted Prices", line=dict(color='#00ff7f')))
-        fig2.update_layout(
-            template='plotly_dark',
-            title="Forecast for Next 10 Days",
-            xaxis_title="Date",
-            yaxis_title="Price",
-            legend_title="Legend"
-        )
+        fig2.update_layout(template='plotly_dark', title="Forecast for Next 10 Business Days", xaxis_title="Date", yaxis_title="Price", legend_title="Legend")
         st.plotly_chart(fig2, use_container_width=True)
 
         # Forecast Table
-        st.subheader("📋 Forecasted Prices Table")
-        forecast_df = pd.DataFrame({"Date": future_dates, "Forecasted Price": future_predictions})
-        st.dataframe(forecast_df.style.set_properties(**{'background-color': '#1e1e1e', 'color': '#ffffff'}))
+st.subheader("📋 Forecasted Prices Table")
+forecast_df = pd.DataFrame({"Date": future_dates.date, "Forecasted Price": future_predictions})  # Use .date to remove time
+st.dataframe(
+    forecast_df.style.set_properties(**{'background-color': '#1e1e1e', 'color': '#ffffff', 'border': '1px solid #444'})
+)
 
 # Footer
 st.markdown("---")  # Add a horizontal line for separation
